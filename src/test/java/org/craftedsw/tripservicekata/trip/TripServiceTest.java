@@ -26,13 +26,14 @@ public class TripServiceTest {
 
     @BeforeEach
     void setUp() {
-        loggedInUser = NOT_LOGGED_IN_USER;
+        loggedInUser = LOGGED_IN_USER;
         tripService = new TestableTripService();
     }
 
     @Test
     public void should_throw_user_not_logged_in_exception() {
         User user = new User();
+        loggedInUser = NOT_LOGGED_IN_USER;
 
         assertThrows(UserNotLoggedInException.class, () -> {
             tripService.getTripsByUser(user);
@@ -41,7 +42,6 @@ public class TripServiceTest {
 
     @Test
     public void should_return_no_trips_when_logged_in_user_is_no_friend() {
-        loggedInUser = LOGGED_IN_USER;
         User friend = new User();
 
         friend.addFriend(ANOTHER_USER);
@@ -53,7 +53,6 @@ public class TripServiceTest {
 
     @Test
     public void should_return_trips_when_logged_in_user_is_friend() {
-        loggedInUser = LOGGED_IN_USER;
         User friend = new User();
         friend.addFriend(loggedInUser);
         friend.addTrip(TRIP_TO_BARCELONA);

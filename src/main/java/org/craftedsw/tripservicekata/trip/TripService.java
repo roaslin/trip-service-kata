@@ -33,7 +33,7 @@ public class TripService {
 		return TripDAO.findTripsByUser(user);
 	}
 
-	protected User loggedUser() {
+	protected User loggedUser()   {
 		return UserSession.getInstance().getLoggedUser();
 	}
 
