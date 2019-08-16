@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.craftedsw.tripservicekata.trip.UserBuilder.aUser;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -42,25 +43,23 @@ public class TripServiceTest {
 
     @Test
     public void should_return_no_trips_when_logged_in_user_is_no_friend() {
-        User friend = new User();
-
-        friend.addFriend(ANOTHER_USER);
-        friend.addTrip(TRIP_TO_BARCELONA);
-        friend.addTrip(TRIP_TO_SEVILLE);
+        User friend = aUser()
+                .friendsWith(ANOTHER_USER)
+                .withTrips(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE)
+                .build();
 
         assertThat(tripService.getTripsByUser(friend).size(), CoreMatchers.is(0));
     }
 
     @Test
     public void should_return_trips_when_logged_in_user_is_friend() {
-        User friend = new User();
-        friend.addFriend(loggedInUser);
-        friend.addTrip(TRIP_TO_BARCELONA);
-        friend.addTrip(TRIP_TO_SEVILLE);
+        User friend = aUser()
+                .friendsWith(loggedInUser, ANOTHER_USER)
+                .withTrips(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE)
+                .build();
 
         assertThat(tripService.getTripsByUser(friend).size(), CoreMatchers.is(2));
     }
-
 
     private class TestableTripService extends TripService {
 
