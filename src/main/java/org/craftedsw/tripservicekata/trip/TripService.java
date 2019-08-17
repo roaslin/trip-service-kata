@@ -16,10 +16,14 @@ public class TripService {
         }
 
         return user.isFriendWith(loggedUser()) ? findTripsBy(user)
-                : emptyList();
+                : noTrips();
     }
 
-    protected List<Trip> findTripsBy(User user) {
+	private List<Trip> noTrips() {
+		return emptyList();
+	}
+
+	protected List<Trip> findTripsBy(User user) {
         return TripDAO.findTripsByUser(user);
     }
 
