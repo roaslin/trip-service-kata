@@ -10,37 +10,34 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static org.craftedsw.tripservicekata.trip.UserBuilder.aUser;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TripServiceTest {
-
-
+    private static final User A_USER = new User();
     private static final User NOT_LOGGED_IN_USER = null;
     private static final User LOGGED_IN_USER = new User();
     private static final User ANOTHER_USER = new User();
     private static final Trip TRIP_TO_BARCELONA = new Trip();
     private static final Trip TRIP_TO_SEVILLE = new Trip();
-    private TripService tripService;
     private TripService realTripService;
 
     @Mock
     private TripDAO tripDAO;
 
     @Before
-   public void setUp() {
-        tripService = new TestableTripService(tripDAO);
+    public void setUp() {
         realTripService = new TripService(tripDAO);
     }
 
     @Test(expected = UserNotLoggedInException.class)
     public void should_throw_user_not_logged_in_exception() {
-        User user = new User();
 
-        tripService.getTripsByUser(user, NOT_LOGGED_IN_USER);
+        realTripService.getTripsByUser(A_USER, NOT_LOGGED_IN_USER);
     }
 
     @Test
@@ -50,7 +47,7 @@ public class TripServiceTest {
                 .withTrips(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE)
                 .build();
 
-        assertThat(tripService.getTripsByUser(friend, LOGGED_IN_USER).size(), CoreMatchers.is(0));
+        assertThat(realTripService.getTripsByUser(friend, LOGGED_IN_USER).size(), CoreMatchers.is(0));
     }
 
     @Test
@@ -60,18 +57,8 @@ public class TripServiceTest {
                 .withTrips(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE)
                 .build();
 
+        given(tripDAO.findTripsBy(friend)).willReturn(Arrays.asList(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE));
+
         assertThat(realTripService.getTripsByUser(friend, LOGGED_IN_USER).size(), CoreMatchers.is(2));
-    }
-
-    private class TestableTripService extends TripService {
-
-        public TestableTripService(TripDAO tripDAO) {
-            super(tripDAO);
-        }
-
-        @Override
-        protected List<Trip> findTripsBy(User user) {
-            return user.trips();
-        }
     }
 }

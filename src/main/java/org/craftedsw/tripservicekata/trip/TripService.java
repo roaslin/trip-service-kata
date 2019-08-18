@@ -30,7 +30,7 @@ public class TripService {
 		return emptyList();
 	}
 
-	protected List<Trip> findTripsBy(User user) {
+	private List<Trip> findTripsBy(User user) {
         return tripDAO
 				.findTripsBy(user);
     }
