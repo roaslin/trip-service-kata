@@ -37,7 +37,7 @@ public class TripServiceTest {
         loggedInUser = NOT_LOGGED_IN_USER;
 
         assertThrows(UserNotLoggedInException.class, () -> {
-            tripService.getTripsByUser(user);
+            tripService.getTripsByUser(user, loggedInUser);
         });
     }
 
@@ -48,7 +48,7 @@ public class TripServiceTest {
                 .withTrips(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE)
                 .build();
 
-        assertThat(tripService.getTripsByUser(friend).size(), CoreMatchers.is(0));
+        assertThat(tripService.getTripsByUser(friend, loggedInUser).size(), CoreMatchers.is(0));
     }
 
     @Test
@@ -58,15 +58,10 @@ public class TripServiceTest {
                 .withTrips(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE)
                 .build();
 
-        assertThat(tripService.getTripsByUser(friend).size(), CoreMatchers.is(2));
+        assertThat(tripService.getTripsByUser(friend, loggedInUser).size(), CoreMatchers.is(2));
     }
 
     private class TestableTripService extends TripService {
-
-        @Override
-        protected User loggedUser() {
-            return loggedInUser;
-        }
 
         @Override
         protected List<Trip> findTripsBy(User user) {

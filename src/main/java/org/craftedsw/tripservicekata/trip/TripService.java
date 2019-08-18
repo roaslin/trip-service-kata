@@ -10,12 +10,12 @@ import static java.util.Collections.emptyList;
 
 public class TripService {
 
-    public List<Trip> getTripsByUser(User user) throws UserNotLoggedInException {
-        if (loggedUser() == null) {
+    public List<Trip> getTripsByUser(User user, User loggedInUser) throws UserNotLoggedInException {
+        if (loggedInUser == null) {
             throw new UserNotLoggedInException();
         }
 
-        return user.isFriendWith(loggedUser()) ? findTripsBy(user)
+        return user.isFriendWith(loggedInUser) ? findTripsBy(user)
                 : noTrips();
     }
 
@@ -26,9 +26,4 @@ public class TripService {
 	protected List<Trip> findTripsBy(User user) {
         return TripDAO.findTripsByUser(user);
     }
-
-    protected User loggedUser() {
-        return UserSession.getInstance().getLoggedUser();
-    }
-
 }
