@@ -37,7 +37,7 @@ public class TripServiceTest {
     @Test(expected = UserNotLoggedInException.class)
     public void should_throw_user_not_logged_in_exception() {
 
-        realTripService.getTripsByUser(A_USER, NOT_LOGGED_IN_USER);
+        realTripService.findFriendTrips(A_USER, NOT_LOGGED_IN_USER);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class TripServiceTest {
                 .withTrips(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE)
                 .build();
 
-        assertThat(realTripService.getTripsByUser(friend, LOGGED_IN_USER).size(), CoreMatchers.is(0));
+        assertThat(realTripService.findFriendTrips(friend, LOGGED_IN_USER).size(), CoreMatchers.is(0));
     }
 
     @Test
@@ -59,6 +59,6 @@ public class TripServiceTest {
 
         given(tripDAO.findTripsBy(friend)).willReturn(Arrays.asList(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE));
 
-        assertThat(realTripService.getTripsByUser(friend, LOGGED_IN_USER).size(), CoreMatchers.is(2));
+        assertThat(realTripService.findFriendTrips(friend, LOGGED_IN_USER).size(), CoreMatchers.is(2));
     }
 }

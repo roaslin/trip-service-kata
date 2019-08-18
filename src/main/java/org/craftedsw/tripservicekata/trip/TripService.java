@@ -17,7 +17,7 @@ public class TripService {
 		this.tripDAO = tripDAO;
 	}
 
-	public List<Trip> getTripsByUser(User user, User loggedInUser) throws UserNotLoggedInException {
+	public List<Trip> findFriendTrips(User user, User loggedInUser) throws UserNotLoggedInException {
         if (loggedInUser == null) {
             throw new UserNotLoggedInException();
         }
