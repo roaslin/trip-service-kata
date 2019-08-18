@@ -4,16 +4,18 @@ package org.craftedsw.tripservicekata.trip;
 import org.craftedsw.tripservicekata.exception.UserNotLoggedInException;
 import org.craftedsw.tripservicekata.user.User;
 import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
 import static org.craftedsw.tripservicekata.trip.UserBuilder.aUser;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class TripServiceTest {
 
 
@@ -23,19 +25,22 @@ public class TripServiceTest {
     private static final Trip TRIP_TO_BARCELONA = new Trip();
     private static final Trip TRIP_TO_SEVILLE = new Trip();
     private TripService tripService;
+    private TripService realTripService;
 
-    @BeforeEach
-    void setUp() {
-        tripService = new TestableTripService();
+    @Mock
+    private TripDAO tripDAO;
+
+    @Before
+   public void setUp() {
+        tripService = new TestableTripService(tripDAO);
+        realTripService = new TripService(tripDAO);
     }
 
-    @Test
+    @Test(expected = UserNotLoggedInException.class)
     public void should_throw_user_not_logged_in_exception() {
         User user = new User();
 
-        assertThrows(UserNotLoggedInException.class, () -> {
-            tripService.getTripsByUser(user, NOT_LOGGED_IN_USER);
-        });
+        tripService.getTripsByUser(user, NOT_LOGGED_IN_USER);
     }
 
     @Test
@@ -55,10 +60,14 @@ public class TripServiceTest {
                 .withTrips(TRIP_TO_BARCELONA, TRIP_TO_SEVILLE)
                 .build();
 
-        assertThat(tripService.getTripsByUser(friend, LOGGED_IN_USER).size(), CoreMatchers.is(2));
+        assertThat(realTripService.getTripsByUser(friend, LOGGED_IN_USER).size(), CoreMatchers.is(2));
     }
 
     private class TestableTripService extends TripService {
+
+        public TestableTripService(TripDAO tripDAO) {
+            super(tripDAO);
+        }
 
         @Override
         protected List<Trip> findTripsBy(User user) {

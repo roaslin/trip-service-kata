@@ -1,10 +1,10 @@
 package org.craftedsw.tripservicekata.user;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.craftedsw.tripservicekata.trip.UserBuilder.aUser;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class UserTest {
 
